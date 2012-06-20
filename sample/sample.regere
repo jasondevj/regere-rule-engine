@@ -1,0 +1,21 @@
+{
+  "regere-id" : "regere_id_1",
+  "types" : {"total_number_of_topup" : "LONG",
+             "total_number_of_sms" : "DOUBLE",
+             "current_top_up_amount" : "LONG",
+             "current_date" : "DATE",
+             "class_of_service" : "STRING"},
+  "common-unique-identifier" : "user_id",
+  "persistable-values" : ["current_top_up_amount", "total_number_of_topup"],
+
+  "pre-rules" : [
+                    {"pre-rule" : "(total_number_of_topup_S != 10) || (current_top_up_amount_C == 30 || class_of_service_C == ABC)", "listener-call-value" : "Pre rule 1 matches"},
+                    {"pre-rule" : "((total_number_of_topup_S != 10) && (total_number_of_topup_S != 15)) || (current_top_up_amount_C > 0 || class_of_service_C != ABC)", "listener-call-value" : "Pre rule 2 matches"},
+                    {"pre-rule" : "(total_number_of_topup_S != 10) || !(current_top_up_amount_C == 30 || ((class_of_service_C == ABC) && !(class_of_service_C == ABC)))", "listener-call-value" : "Pre rule 3 matches"}
+               ],
+  "pre-rule-action-listener" : "listener-1",
+
+  "final-rule" : "(total_number_of_topup_S >= 11 && class_of_service_C == class_of_service_S)",
+  "fina-rule-action-listener" : {"listener" : "listener-2", "value" : "10"}
+}
+
