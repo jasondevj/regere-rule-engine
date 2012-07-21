@@ -19,7 +19,7 @@ public class RegerRule {
     public static final String LISTENER = "listener";
     public static final String PERSISTABLE_VALUES = "persistable-values";
     private final String ruleId;
-    private final String commonIdentifier;
+    private final String identifier;
     private final List<RegereBoolean> preRules;
     private final List<String> persistableEvents;
 
@@ -34,7 +34,7 @@ public class RegerRule {
         for (Map map1 : ((List<Map>) map.get(PRE_RULES))) {
             preRules.add(RegereRuleGenerator.generate((String) map1.get(PRE_RULE), (Map<String, String>) map.get("types")));
         }
-        commonIdentifier = (String) map.get(COMMON_UNIQUE_IDENTIFIER);
+        identifier = (String) map.get(COMMON_UNIQUE_IDENTIFIER);
         persistableEvents = (List<String>) map.get(PERSISTABLE_VALUES);
 
         finalRule = RegereRuleGenerator.generate(finalRuleStr, (Map<String, String>) map.get("types"));
@@ -62,8 +62,8 @@ public class RegerRule {
         return finalRuleLister;
     }
 
-    public String getCommonIdentifier() {
-        return commonIdentifier;
+    public String getIdentifier() {
+        return identifier;
     }
 
     public List<String> getPersistableEvents() {

@@ -30,16 +30,16 @@ public class RegereRuleAnalyzerServiceImplTest {
 
 
     private RegereRuleAnalyzerServiceImpl regereRuleAnalyzerService;
-    private DefaultIntermediateEventLoader persistedEventLoader;
+    private DefaultIntermediatePersistedTable persistedEventLoader;
 
     @Before
     public void setUp() throws Exception {
         regereRuleAnalyzerService = new RegereRuleAnalyzerServiceImpl();
-        persistedEventLoader = new DefaultIntermediateEventLoader();
+        persistedEventLoader = new DefaultIntermediatePersistedTable();
         persistedEventLoader.init();
 
         regereRuleAnalyzerService.setJsonParser(new DefaultJsonParser());
-        regereRuleAnalyzerService.setIntermediateEventLoader(persistedEventLoader);
+        regereRuleAnalyzerService.setIntermediatePersistedTable(persistedEventLoader);
         regereRuleAnalyzerService.addRule(DefaultJsonParser.class.getResourceAsStream("/sample.regere"));
         regereRuleAnalyzerService.setPreRuleGoalAchievedListeners(new HashMap<String, PreRuleGoalAchievedListener>());
         regereRuleAnalyzerService.setFinalRuleGoalAchievedListeners(new HashMap<String, FinalRuleGoalAchievedListener>());
@@ -63,7 +63,7 @@ public class RegereRuleAnalyzerServiceImplTest {
         summarizedEvents.put("current_date", new Date());
         summarizedEvents.put("class_of_service", "ABC");
 
-        regereRuleAnalyzerService.analyze(currentEvent, summarizedEvents);
+        regereRuleAnalyzerService.analyze(currentEvent);
     }
 
     @Test
@@ -84,7 +84,7 @@ public class RegereRuleAnalyzerServiceImplTest {
         summarizedEvents.put("current_date", new Date());
         summarizedEvents.put("class_of_service", "ABC");
 
-        regereRuleAnalyzerService.analyze(currentEvent, summarizedEvents);
+        regereRuleAnalyzerService.analyze(currentEvent);
     }
 
 

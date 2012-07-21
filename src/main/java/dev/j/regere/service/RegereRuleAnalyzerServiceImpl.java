@@ -22,7 +22,6 @@ import dev.j.regere.parser.json.DefaultJsonParser;
 import org.apache.log4j.Logger;
 
 import java.io.InputStream;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +35,7 @@ public class RegereRuleAnalyzerServiceImpl implements RegereRuleAnalyzerService 
 
     private static final Logger logger = Logger.getLogger(RegereRuleAnalyzerServiceImpl.class);
     private DefaultJsonParser jsonParser;
-    private IntermediateEventLoader intermediateEventLoader;
+    private IntermediatePersistedTable intermediatePersistedTable;
 
     private Map<String, PreRuleGoalAchievedListener> preRuleGoalAchievedListeners;
     private Map<String, FinalRuleGoalAchievedListener> finalRuleGoalAchievedListeners;
@@ -47,21 +46,16 @@ public class RegereRuleAnalyzerServiceImpl implements RegereRuleAnalyzerService 
     public void init() {
     }
 
-    @Override
-    public void analyze(Map<String, Object> summarizedEvents) {
-        Map<String, Object> objectObjectMap = Collections.emptyMap();
-        analyze(objectObjectMap, summarizedEvents);
-    }
 
     @Override
-    public void analyze(Map<String, Object> currentEvent, Map<String, Object> summarizedEvents) {
+    public void analyze(Map<String, Object> event) {
 
         for (String ruleId : ruleMap.keySet()) {
 
             final RegerRule regerRule = ruleMap.get(ruleId);
 
-            Map<String, Object> updatedEvent = intermediateEventLoader.load(ruleId, regerRule.getCommonIdentifier(), currentEvent);
-            RegereRuleFlowWrapper flowWrapper = new RegereRuleFlowWrapper(updatedEvent, summarizedEvents);
+            Map<String, Object> updatedEvent = intermediatePersistedTable.load(ruleId, regerRule.getIdentifier(), event);
+            RegereRuleFlowWrapper flowWrapper = new RegereRuleFlowWrapper(updatedEvent);
 
             final List<RegereBoolean> preRules = regerRule.getPreRules();
             final boolean allPreRulesPassed = executePreRules(regerRule, flowWrapper, preRules);
@@ -69,7 +63,7 @@ public class RegereRuleAnalyzerServiceImpl implements RegereRuleAnalyzerService 
                 logger.info("All pre rules were passed executing final rule");
                 executeFinalRule(regerRule, flowWrapper);
             }
-            intermediateEventLoader.persistEvent(ruleId, (String) currentEvent.get(regerRule.getCommonIdentifier()), updatedEvent, regerRule.getPersistableEvents());
+            intermediatePersistedTable.persistEvent(ruleId, (String) event.get(regerRule.getIdentifier()), updatedEvent, regerRule.getPersistableEvents());
         }
     }
 
@@ -77,7 +71,10 @@ public class RegereRuleAnalyzerServiceImpl implements RegereRuleAnalyzerService 
         final boolean pass = regerRule.getFinalRule().booleanValue(flowWrapper);
         if(pass) {
             logger.info("Rule matched [" + regerRule.getRuleId() + "]");
-            finalRuleGoalAchievedListeners.get(regerRule.getFinalRuleLister());
+            final FinalRuleGoalAchievedListener listener = finalRuleGoalAchievedListeners.get(regerRule.getFinalRuleLister());
+            if (listener != null) {
+                listener.achieved(flowWrapper.getEvent(), regerRule);
+            }
         } else {
             logger.debug("Final Rule[" + regerRule.getRuleId() + "] did not match");
         }
@@ -89,7 +86,10 @@ public class RegereRuleAnalyzerServiceImpl implements RegereRuleAnalyzerService 
             final boolean pass = preRule.booleanValue(flowWrapper);
             if (pass) {
                 logger.info("Rule matched [" + regerRule.getRuleId() + "]");
-                preRuleGoalAchievedListeners.get(regerRule.getPreRuleLister());
+                final PreRuleGoalAchievedListener listener = preRuleGoalAchievedListeners.get(regerRule.getPreRuleLister());
+                if (listener != null) {
+                    listener.achieved(flowWrapper.getEvent(), regerRule);
+                }
             } else {
                 returnValue = false;
                 logger.debug("PreRule[" + regerRule.getRuleId() + "] did not match");
@@ -124,8 +124,8 @@ public class RegereRuleAnalyzerServiceImpl implements RegereRuleAnalyzerService 
         this.jsonParser = jsonParser;
     }
 
-    public void setIntermediateEventLoader(IntermediateEventLoader intermediateEventLoader) {
-        this.intermediateEventLoader = intermediateEventLoader;
+    public void setIntermediatePersistedTable(IntermediatePersistedTable intermediatePersistedTable) {
+        this.intermediatePersistedTable = intermediatePersistedTable;
     }
 
     public void setPreRuleGoalAchievedListeners(Map<String, PreRuleGoalAchievedListener> preRuleGoalAchievedListeners) {

@@ -6,24 +6,27 @@ public class RegereRuleFlowWrapper {
 
     //todo need to think if the intermediate event will be useful for the flow
 //    private Map<String, Object> intermediateEvents;
-    private Map<String, Object> currentEvent;
-    private Map<String, Object> summarizedEvents;
+    private Map<String, Object> event;
 
-    public RegereRuleFlowWrapper(Map<String, Object> currentEvent, Map<String, Object> summarizedEvents) {
+    public RegereRuleFlowWrapper(Map<String, Object> event) {
 //        this.intermediateEvents = intermediateEvents;
-        this.currentEvent = currentEvent;
-        this.summarizedEvents = summarizedEvents;
+        this.event = event;
     }
 
 //    public Map<String, Object> getIntermediateEvents() {
 //        return intermediateEvents;
 //    }
 
-    public Map<String, Object> getCurrentEvent() {
-        return currentEvent;
+    public Map<String, Object> getEvent() {
+        return event;
     }
 
-    public Map<String, Object> getSummarizedEvents() {
-        return summarizedEvents;
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("RegereRuleFlowWrapper");
+        sb.append("{event=").append(event);
+        sb.append('}');
+        return sb.toString();
     }
 }

@@ -34,17 +34,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class RegereRuleAnalyzerServicePerformanceTester {
 
     private RegereRuleAnalyzerServiceImpl regereRuleAnalyzerService;
-    private DefaultIntermediateEventLoader persistedEventLoader;
+    private DefaultIntermediatePersistedTable persistedEventLoader;
     private ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     private final AtomicInteger counter = new AtomicInteger(0);
 
     @Before
     public void setUp() throws Exception {
         regereRuleAnalyzerService = new RegereRuleAnalyzerServiceImpl();
-        persistedEventLoader = new DefaultIntermediateEventLoader();
+        persistedEventLoader = new DefaultIntermediatePersistedTable();
         persistedEventLoader.init();
         regereRuleAnalyzerService.setJsonParser(new DefaultJsonParser());
-        regereRuleAnalyzerService.setIntermediateEventLoader(persistedEventLoader);
+        regereRuleAnalyzerService.setIntermediatePersistedTable(persistedEventLoader);
         regereRuleAnalyzerService.addRule(DefaultJsonParser.class.getResourceAsStream("/sample.regere"));
         regereRuleAnalyzerService.setPreRuleGoalAchievedListeners(new HashMap<String, PreRuleGoalAchievedListener>());
         regereRuleAnalyzerService.setFinalRuleGoalAchievedListeners(new HashMap<String, FinalRuleGoalAchievedListener>());
@@ -60,7 +60,7 @@ public class RegereRuleAnalyzerServicePerformanceTester {
             }
         }, 1000, 1000, TimeUnit.MILLISECONDS);
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1; i++) {
             createThreadProducer(new Random());
         }
         Thread.sleep(100000);
@@ -70,7 +70,7 @@ public class RegereRuleAnalyzerServicePerformanceTester {
         new Thread() {
             @Override
             public void run() {
-                for (int i = 0; i < 100000; i++) {
+                for (int i = 0; i < 10; i++) {
                     final HashMap<String, Object> currentEvent = new HashMap<>();
                     currentEvent.put("user_id", new Long(r.nextInt(1000000)).toString());
                     currentEvent.put("total_number_of_topup", new Long(r.nextInt(2234236)));
@@ -87,7 +87,7 @@ public class RegereRuleAnalyzerServicePerformanceTester {
                     summarizedEvents.put("current_date", new Date());
                     summarizedEvents.put("class_of_service", "ABC");
                     try {
-                        regereRuleAnalyzerService.analyze(currentEvent, summarizedEvents);
+                        regereRuleAnalyzerService.analyze(currentEvent);
                         counter.incrementAndGet();
                     } catch (Exception e) {
                         e.printStackTrace();

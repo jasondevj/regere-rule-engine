@@ -7,9 +7,9 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 
-public class DefaultIntermediateEventLoader implements IntermediateEventLoader {
+public class DefaultIntermediatePersistedTable implements IntermediatePersistedTable {
 
-    private static final Logger logger = Logger.getLogger(DefaultIntermediateEventLoader.class);
+    private static final Logger logger = Logger.getLogger(DefaultIntermediatePersistedTable.class);
     public static final String STRING_COLAN = ":";
     public static final String ID = "_id";
     private DBCollection dbCollection;

@@ -13,10 +13,13 @@
 package dev.j.regere;
 
 import dev.j.regere.condition.RegereBoolean;
+import dev.j.regere.domain.RegereRuleFlowWrapper;
 import dev.j.regere.service.RegereRuleGenerator;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;

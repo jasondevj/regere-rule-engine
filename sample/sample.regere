@@ -9,13 +9,13 @@
   "persistable-values" : ["current_top_up_amount", "total_number_of_topup"],
 
   "pre-rules" : [
-                    {"pre-rule" : "(total_number_of_topup_S != 10) || (current_top_up_amount_C == 30 || class_of_service_C == ABC)", "listener-call-value" : "Pre rule 1 matches"},
-                    {"pre-rule" : "((total_number_of_topup_S != 10) && (total_number_of_topup_S != 15)) || (current_top_up_amount_C > 0 || class_of_service_C != ABC)", "listener-call-value" : "Pre rule 2 matches"},
-                    {"pre-rule" : "(total_number_of_topup_S != 10) || !(current_top_up_amount_C == 30 || ((class_of_service_C == ABC) && !(class_of_service_C == ABC)))", "listener-call-value" : "Pre rule 3 matches"}
+                    {"pre-rule" : "(total_number_of_topup != 10) || (current_top_up_amount == 30 || class_of_service == ABC)", "listener-call-value" : "Pre rule 1 matches"},
+                    {"pre-rule" : "((total_number_of_topup != 10) && (total_number_of_topup != 15)) || (current_top_up_amount > 0 || class_of_service != ABC)", "listener-call-value" : "Pre rule 2 matches"},
+                    {"pre-rule" : "(total_number_of_topup != 10) || !(current_top_up_amount == 30 || ((class_of_service == ABC) && !(class_of_service == ABC)))", "listener-call-value" : "Pre rule 3 matches"}
                ],
   "pre-rule-action-listener" : "listener-1",
 
-  "final-rule" : "(total_number_of_topup_S >= 11 && class_of_service_C == class_of_service_S)",
+  "final-rule" : "(total_number_of_topup >= 11 && class_of_service == class_of_service_S)",
   "fina-rule-action-listener" : {"listener" : "listener-2", "value" : "10"}
 }
 

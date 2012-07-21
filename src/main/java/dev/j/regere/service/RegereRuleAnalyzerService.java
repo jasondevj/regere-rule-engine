@@ -11,9 +11,7 @@ public interface RegereRuleAnalyzerService {
 
     void addRule(InputStream inputStream) throws MalformedException;
 
-    void analyze(Map<String, Object> currentEvent, Map<String, Object> summarizedEvents);
-
-    void analyze(Map<String, Object> summarizedEvents);
+    void analyze(Map<String, Object> event);
 
     void removeRule(String ruleId);
 }
