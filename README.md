@@ -24,3 +24,5 @@ Depending on the rule condition which is met a set of action can be executed.
 
 
  This is not licensed for commercial use yet.
+
+ Test commit
