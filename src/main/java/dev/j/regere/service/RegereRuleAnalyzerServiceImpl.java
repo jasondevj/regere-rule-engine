@@ -19,6 +19,7 @@ import dev.j.regere.domain.RegereRuleFlowWrapper;
 import dev.j.regere.listener.FinalRuleGoalAchievedListener;
 import dev.j.regere.listener.PreRuleGoalAchievedListener;
 import dev.j.regere.parser.json.DefaultJsonParser;
+import dev.j.regere.respository.IntermediatePersistedTable;
 import org.apache.log4j.Logger;
 
 import java.io.InputStream;

@@ -2,7 +2,7 @@ package dev.j.regere.service;
 
 import dev.j.regere.MalformedException;
 import dev.j.regere.condition.*;
-import dev.j.regere.validation.ExpressionValidationUtil;
+import dev.j.regere.util.ExpressionValidationUtil;
 
 import java.util.Map;
 import java.util.regex.Matcher;

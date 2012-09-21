@@ -1,4 +1,4 @@
-package dev.j.regere.validation;
+package dev.j.regere.util;
 
 import dev.j.regere.MalformedException;
 

@@ -17,6 +17,7 @@ import dev.j.regere.domain.RegerRule;
 import dev.j.regere.listener.FinalRuleGoalAchievedListener;
 import dev.j.regere.listener.PreRuleGoalAchievedListener;
 import dev.j.regere.parser.json.DefaultJsonParser;
+import dev.j.regere.respository.IntermediatePersistedTable;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * $LastChangedDate$
@@ -74,8 +76,8 @@ public class RegereRuleAnalyzerServiceFunctionTest {
         currentEvent.put("user_id", "1234");
         currentEvent.put("total_number_of_topup", 11l);
         currentEvent.put("current_top_up_amount", 30l);
-        currentEvent.put("total_number_of_sms", new Double(r.nextInt(2234326)));
-        currentEvent.put("KFG", new Long(r.nextInt(22226)));
+        currentEvent.put("total_number_of_sms", (double) r.nextInt(2234326));
+        currentEvent.put("KFG", (long) r.nextInt(22226));
         currentEvent.put("current_date", new Date());
         currentEvent.put("class_of_service", "ABC");
     }
