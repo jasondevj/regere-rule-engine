@@ -30,7 +30,7 @@ public class QueueInitiator {
     private Map<Integer, QueueManager> queue;
     private final AtomicInteger threadNumber = new AtomicInteger(1);
     private final ThreadGroup cachedThreadPool = new ThreadGroup("CachedThreadPool");
-    private int numberOfThreads = 3;
+    private int numberOfThreads;
 
     private QueueInitiator() {
         logger.info("initiating queues...");
