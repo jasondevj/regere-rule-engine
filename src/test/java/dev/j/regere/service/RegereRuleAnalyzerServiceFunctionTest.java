@@ -13,11 +13,12 @@
 package dev.j.regere.service;
 
 import dev.j.regere.MalformedException;
-import dev.j.regere.domain.RegerRule;
+import dev.j.regere.domain.RegereRule;
 import dev.j.regere.listener.FinalRuleGoalAchievedListener;
 import dev.j.regere.listener.PreRuleGoalAchievedListener;
 import dev.j.regere.parser.json.DefaultJsonParser;
-import dev.j.regere.respository.IntermediatePersistedTable;
+import dev.j.regere.respository.OnMemoryIntermediatePersistedTable;
+import dev.j.regere.service.impl.RegereRuleAnalyzerService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,9 +28,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 /**
  * $LastChangedDate$
  * $LastChangedBy$
@@ -37,29 +35,30 @@ import static org.mockito.Mockito.when;
  */
 public class RegereRuleAnalyzerServiceFunctionTest {
 
-    private RegereRuleAnalyzerServiceImpl analyzerService;
+    private RegereRuleAnalyzerService analyzerService;
     private HashMap<String, Object> currentEvent;
+    private OnMemoryIntermediatePersistedTable persistedTable;
 
     @Before
     public void setUp() throws MalformedException {
-        analyzerService = new RegereRuleAnalyzerServiceImpl();
+        analyzerService = new RegereRuleAnalyzerService();
         analyzerService.setJsonParser(new DefaultJsonParser());
-        final IntermediatePersistedTable persistedTable = mock(IntermediatePersistedTable.class);
         createEvent();
-        when(persistedTable.load("regere_id_1", "user_id", currentEvent)).thenReturn(currentEvent);
+        persistedTable = new OnMemoryIntermediatePersistedTable();
+        persistedTable.init();
         analyzerService.setIntermediatePersistedTable(persistedTable);
         final HashMap<String, FinalRuleGoalAchievedListener> finalListeners = new HashMap<>();
         final HashMap<String, PreRuleGoalAchievedListener> preListeners = new HashMap<>();
 
         preListeners.put("listener-1", new PreRuleGoalAchievedListener() {
             @Override
-            public void achieved(Map<String, Object> event, RegerRule regerRule) {
+            public void achieved(Map<String, Object> event, String identifier) {
                 System.out.println("PRE");
             }
         });
         finalListeners.put("listener-2", new FinalRuleGoalAchievedListener() {
             @Override
-            public void achieved(Map<String, Object> event, RegerRule regerRule) {
+            public void achieved(Map<String, Object> event, RegereRule regereRule) {
                 System.out.println("FINAL");
             }
         });
@@ -67,6 +66,7 @@ public class RegereRuleAnalyzerServiceFunctionTest {
         analyzerService.addRule(new ByteArrayInputStream(testRule.getBytes()));
         analyzerService.setFinalRuleGoalAchievedListeners(finalListeners);
         analyzerService.setPreRuleGoalAchievedListeners(preListeners);
+        analyzerService.init();
 
     }
 
@@ -94,18 +94,18 @@ public class RegereRuleAnalyzerServiceFunctionTest {
             "             \"current_top_up_amount\" : \"LONG\",\n" +
             "             \"current_date\" : \"DATE\",\n" +
             "             \"class_of_service\" : \"STRING\"},\n" +
-            "  \"common-unique-identifier\" : \"user_id\",\n" +
+            "  \"unique-identifier\" : \"user_id\",\n" +
             "  \"persistable-values\" : [\"current_top_up_amount\", \"total_number_of_topup\"],\n" +
             "\n" +
             "  \"pre-rules\" : [\n" +
-            "                    {\"pre-rule\" : \"(total_number_of_topup != 10) || (current_top_up_amount == 30 || class_of_service == ABC)\", \"listener-call-value\" : \"Pre rule 1 matches\"},\n" +
-            "                    {\"pre-rule\" : \"((total_number_of_topup != 10) && (total_number_of_topup != 15)) || (current_top_up_amount > 0 || class_of_service != ABC)\", \"listener-call-value\" : \"Pre rule 2 matches\"},\n" +
-            "                    {\"pre-rule\" : \"(total_number_of_topup != 10) || !(current_top_up_amount == 30 || ((class_of_service == ABC) && !(class_of_service == ABC)))\", \"listener-call-value\" : \"Pre rule 3 matches\"}\n" +
+            "                    {\"pre-rule-id\" : 1, \"pre-rule\" : \"(total_number_of_topup != 10) || (current_top_up_amount == 30 || class_of_service == ABC)\", \"listener-call-value\" : \"Pre rule 1 matches\"},\n" +
+            "                    {\"pre-rule-id\" : 2, \"pre-rule\" : \"((total_number_of_topup != 10) && (total_number_of_topup != 15)) || (current_top_up_amount > 0 || class_of_service != ABC)\", \"listener-call-value\" : \"Pre rule 2 matches\"},\n" +
+            "                    {\"pre-rule-id\" : 3, \"pre-rule\" : \"(total_number_of_topup != 10) || !(current_top_up_amount == 30 || ((class_of_service == ABC) && !(class_of_service == ABC)))\", \"listener-call-value\" : \"Pre rule 3 matches\"}\n" +
             "               ],\n" +
             "  \"pre-rule-action-listener\" : \"listener-1\",\n" +
             "\n" +
             "  \"final-rule\" : \"(total_number_of_topup >= 11 && class_of_service == ABC)\",\n" +
-            "  \"fina-rule-action-listener\" : {\"listener\" : \"listener-2\", \"value\" : \"10\"}\n" +
+            "  \"final-rule-action-listener\" : {\"listener\" : \"listener-2\", \"value\" : \"10\"}\n" +
             "}\n" +
             "\n";
 }

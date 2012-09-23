@@ -12,6 +12,8 @@
  */
 package dev.j.regere.respository;
 
+import dev.j.regere.domain.RegereRuleFlowWrapper;
+
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -47,12 +49,12 @@ public class FileIntermediatePersistedTable implements IntermediatePersistedTabl
     }
 
     @Override
-    public Map<String, Object> load(String regereId, String commonIdentifier, Map<String, Object> currentEvent) {
+    public RegereRuleFlowWrapper load(String regereId, String commonIdentifier, Map<String, Object> currentEvent) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
-    public void persistEvent(String regereId, String commonIdentifier, Map<String, Object> currentEvent, List<String> persitableKeys) {
+    public void persistEvent(String regereId, String commonIdentifier, RegereRuleFlowWrapper flowWrapper, List<String> persitableKeys) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 }

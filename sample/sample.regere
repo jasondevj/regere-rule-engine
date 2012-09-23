@@ -5,17 +5,17 @@
              "current_top_up_amount" : "LONG",
              "current_date" : "DATE",
              "class_of_service" : "STRING"},
-  "common-unique-identifier" : "user_id",
+  "unique-identifier" : "user_id",
   "persistable-values" : ["current_top_up_amount", "total_number_of_topup"],
 
   "pre-rules" : [
-                    {"pre-rule" : "(total_number_of_topup != 10) || (current_top_up_amount == 30 || class_of_service == ABC)", "listener-call-value" : "Pre rule 1 matches"},
-                    {"pre-rule" : "((total_number_of_topup != 10) && (total_number_of_topup != 15)) || (current_top_up_amount > 0 || class_of_service != ABC)", "listener-call-value" : "Pre rule 2 matches"},
-                    {"pre-rule" : "(total_number_of_topup != 10) || !(current_top_up_amount == 30 || ((class_of_service == ABC) && !(class_of_service == ABC)))", "listener-call-value" : "Pre rule 3 matches"}
+                    {"pre-rule-id" : 1, "pre-rule" : "(total_number_of_topup != 10) || (current_top_up_amount == 30 || class_of_service == ABC)", "listener-call-value" : "Pre rule 1 matches"},
+                    {"pre-rule-id" : 2, "pre-rule" : "((total_number_of_topup != 10) && (total_number_of_topup != 15)) || (current_top_up_amount > 0 && class_of_service == ABZ)", "listener-call-value" : "Pre rule 2 matches"},
+                    {"pre-rule-id" : 3, "pre-rule" : "(total_number_of_topup != 10) || !(current_top_up_amount == 30 && ((class_of_service == ABC) && (class_of_service == ABF)))", "listener-call-value" : "Pre rule 3 matches"}
                ],
   "pre-rule-action-listener" : "listener-1",
 
-  "final-rule" : "(total_number_of_topup >= 11 && class_of_service == class_of_service_S)",
-  "fina-rule-action-listener" : {"listener" : "listener-2", "value" : "10"}
+  "final-rule" : "(total_number_of_topup >= 11 && class_of_service == ABC)",
+  "final-rule-action-listener" : {"listener" : "listener-2"}
 }
 

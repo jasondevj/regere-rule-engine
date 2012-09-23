@@ -17,6 +17,7 @@ import dev.j.regere.listener.PreRuleGoalAchievedListener;
 import dev.j.regere.parser.json.DefaultJsonParser;
 import dev.j.regere.respository.IntermediatePersistedTable;
 import dev.j.regere.respository.OnMemoryIntermediatePersistedTable;
+import dev.j.regere.service.impl.RegereRuleAnalyzerService;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -31,12 +32,12 @@ import java.util.HashMap;
 public class RegereRuleAnalyzerServiceImplTest {
 
 
-    private RegereRuleAnalyzerServiceImpl regereRuleAnalyzerService;
+    private RegereRuleAnalyzerService regereRuleAnalyzerService;
     private IntermediatePersistedTable persistedEventLoader;
 
     @Before
     public void setUp() throws Exception {
-        regereRuleAnalyzerService = new RegereRuleAnalyzerServiceImpl();
+        regereRuleAnalyzerService = new RegereRuleAnalyzerService();
         persistedEventLoader = new OnMemoryIntermediatePersistedTable();
         persistedEventLoader.init();
 
@@ -45,6 +46,7 @@ public class RegereRuleAnalyzerServiceImplTest {
         regereRuleAnalyzerService.addRule(DefaultJsonParser.class.getResourceAsStream("/sample.regere"));
         regereRuleAnalyzerService.setPreRuleGoalAchievedListeners(new HashMap<String, PreRuleGoalAchievedListener>());
         regereRuleAnalyzerService.setFinalRuleGoalAchievedListeners(new HashMap<String, FinalRuleGoalAchievedListener>());
+        regereRuleAnalyzerService.init();
     }
 
     @Test

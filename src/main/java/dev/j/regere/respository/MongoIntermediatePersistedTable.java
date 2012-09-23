@@ -4,9 +4,11 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
+import dev.j.regere.domain.RegereRuleFlowWrapper;
 import org.apache.log4j.Logger;
 
 import java.net.UnknownHostException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -32,7 +34,7 @@ public class MongoIntermediatePersistedTable implements IntermediatePersistedTab
     }
 
     @Override
-    public Map<String, Object> load(String regereId, String commonIdentifier, Map<String, Object> currentEvent) {
+    public RegereRuleFlowWrapper load(String regereId, String commonIdentifier, Map<String, Object> currentEvent) {
 
         final BasicDBObject dbList = new BasicDBObject(ID, regereId + STRING_COLAN + commonIdentifier);
         if (logger.isDebugEnabled()) {
@@ -43,13 +45,14 @@ public class MongoIntermediatePersistedTable implements IntermediatePersistedTab
             logger.info("New intermediate object found loading the object from db");
             currentEvent = loadPersistedValues(currentEvent, dbObject.toMap());
         }
-        return currentEvent;
+        //todo store final rule passed variable and the pass re rules in mongo
+        return new RegereRuleFlowWrapper(currentEvent, new HashSet<Integer>(10));
     }
 
     @Override
-    public void persistEvent(String regereId, String commonIdentifier, Map<String, Object> currentEvent,
-                             List<String> persitableKeys) {
-        final Map<String, Object> persistMap = returnPersistableValues(currentEvent, persitableKeys);
+    public void persistEvent(String regereId, String commonIdentifier,
+                             RegereRuleFlowWrapper flowWrapper, List<String> persitableKeys) {
+        final Map<String, Object> persistMap = returnPersistableValues(flowWrapper.getEvent(), persitableKeys);
         persistMap.put(ID, regereId + STRING_COLAN + commonIdentifier);
         if (logger.isDebugEnabled()) {
             logger.debug("saving intermediate event key [" + persistMap.get(ID) + "]");

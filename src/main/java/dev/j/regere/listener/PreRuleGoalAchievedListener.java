@@ -1,9 +1,7 @@
 package dev.j.regere.listener;
 
-import dev.j.regere.domain.RegerRule;
-
 import java.util.Map;
 
 public interface PreRuleGoalAchievedListener {
-    void achieved(Map<String, Object> event, RegerRule regerRule);
+    void achieved(Map<String, Object> event, String identifier);
 }
